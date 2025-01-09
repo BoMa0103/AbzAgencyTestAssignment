@@ -2,6 +2,12 @@
 
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
+use Livewire\Livewire;
+
+Livewire::setUpdateRoute(function ($handle) {
+    $localePrefix = config('app.locale_prefix');
+    return Route::post("/{$localePrefix}/livewire/update", $handle);
+});
 
 Route::get('/', function () {
     return redirect('/users');
