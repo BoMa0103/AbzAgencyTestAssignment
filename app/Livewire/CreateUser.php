@@ -4,6 +4,7 @@ namespace App\Livewire;
 
 use App\Services\AbzAgencyApi\AbzAgencyApiService;
 use App\Services\AbzAgencyApi\DTO\StoreUserDTO;
+use Exception;
 use Illuminate\Support\Collection;
 use Livewire\Component;
 use Livewire\WithFileUploads;
@@ -34,7 +35,7 @@ class CreateUser extends Component
         'email' => 'required|email|max:255',
         'phone' => 'required|regex:/^\+?[0-9]{10,15}$/',
         'position_id' => 'required|integer',
-        'photo' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:5120'
+        'photo' => 'image|mimes:jpeg,png,jpg,gif,svg|max:5120',
     ];
 
     public function submit(): void
@@ -51,9 +52,16 @@ class CreateUser extends Component
             'photo' => $photoBase64,
         ]);
 
-        $userId = $this->getAbzAgencyApiService()->createUser($storeUserDTO);
+        try {
+            $userId = $this->getAbzAgencyApiService()->createUser($storeUserDTO);
+        } catch (Exception $e) {
+            $this->addError('general', $e->getMessage());
+            return;
+        }
 
-        $this->redirectRoute('users.index');
+        if ($userId) {
+            $this->redirectRoute('users.index');
+        }
     }
 
     public function render()

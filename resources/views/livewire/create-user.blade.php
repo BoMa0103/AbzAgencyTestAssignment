@@ -6,6 +6,7 @@
     @endif
 
     <form wire:submit.prevent="submit" enctype="multipart/form-data">
+        @error('general') <span class="text-red-500">{{ $message }}</span> @enderror
         <!-- Name -->
         <div class="mb-4">
             <label for="name" class="block text-sm font-medium text-gray-700">Name</label>

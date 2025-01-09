@@ -10,6 +10,7 @@ namespace App\Services\AbzAgencyApi;
 use App\Services\AbzAgencyApi\Clients\AbzAgencyApiProvider;
 use App\Services\AbzAgencyApi\DTO\SearchUsersDTO;
 use App\Services\AbzAgencyApi\DTO\StoreUserDTO;
+use Exception;
 use Illuminate\Support\Collection;
 
 class AbzAgencyApiService
@@ -19,6 +20,9 @@ class AbzAgencyApiService
     ) {
     }
 
+    /**
+     * @throws Exception
+     */
     public function createUser(StoreUserDTO $dto): ?int
     {
         return $this->abzAgencyProvider->createUser($dto);

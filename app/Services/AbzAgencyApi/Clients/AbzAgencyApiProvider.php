@@ -10,6 +10,7 @@ namespace App\Services\AbzAgencyApi\Clients;
 use App\Services\AbzAgencyApi\DTO\SearchUsersDTO;
 use App\Services\AbzAgencyApi\DTO\StoreUserDTO;
 use App\Services\Http\HttpClient;
+use Exception;
 use Illuminate\Support\Collection;
 
 class AbzAgencyApiProvider extends HttpClient
@@ -40,9 +41,27 @@ class AbzAgencyApiProvider extends HttpClient
         ];
     }
 
+    /**
+     * @throws Exception
+     */
     public function createUser(StoreUserDTO $dto): ?int
     {
-        $response = $this->post($this->generateCreateUserUrl(), $dto->toArray(), $this->getParams());
+        $params = $this->getParams();
+        $params['headers'] = array_merge($params['headers'], [
+            'Token' => $this->getToken(),
+        ]);
+
+        $response = $this->post(
+            $this->generateCreateUserUrl(),
+            $dto->toArray(),
+            $params,
+        );
+
+        $userId = $response['user_id'] ?? null;
+
+        if (! $userId) {
+            throw new Exception($response['message'] ?? 'User not created');
+        }
 
         return $response['user_id'] ?? null;
     }
@@ -74,7 +93,9 @@ class AbzAgencyApiProvider extends HttpClient
 
     public function getToken(): string
     {
-        return $this->get($this->generateGetTokenUrl(), $this->getParams()) ?: '';
+        $response = $this->get($this->generateGetTokenUrl(), $this->getParams());
+
+        return $response['token'] ?? '';
     }
 
     private function generateCreateUserUrl(): string
