@@ -5,11 +5,14 @@
  * @author    Bogdan Mamontov <bohdan.mamontov@dotsplatform.com>
  */
 
-namespace App\Services\AbzAgency\Clients;
+namespace App\Services\AbzAgencyApi\Clients;
 
+use App\Services\AbzAgencyApi\DTO\SearchUsersDTO;
+use App\Services\AbzAgencyApi\DTO\StoreUserDTO;
 use App\Services\Http\HttpClient;
+use Illuminate\Support\Collection;
 
-class AbzAgencyProvider extends HttpClient
+class AbzAgencyApiProvider extends HttpClient
 {
     const string CREATE_USER_URL_TEMPLATE = '/api/v1/users';
 
@@ -37,14 +40,24 @@ class AbzAgencyProvider extends HttpClient
         ];
     }
 
-    public function createUser(array $data): int
+    public function createUser(StoreUserDTO $dto): ?int
     {
-        return $this->post($this->generateCreateUserUrl(), $data, $this->getParams()) ?: 0;
+        $response = $this->post($this->generateCreateUserUrl(), $dto->toArray(), $this->getParams());
+
+        return $response['user_id'] ?? null;
     }
 
-    public function getUsers(): array
+    public function getUsers(SearchUsersDTO $dto): Collection
     {
-        return $this->get($this->generateGetUsersUrl(), $this->getParams()) ?: [];
+        $url = $this->generateGetUsersUrl();
+        $url .= '?'.http_build_query([
+                'page' => $dto->getPage(),
+                'count' => $dto->getCount(),
+            ]);
+
+        $response = $this->get($url, $this->getParams());
+
+        return collect($response['users'] ?? []) ?: collect();
     }
 
     public function findUser(int $userId): array
@@ -52,9 +65,11 @@ class AbzAgencyProvider extends HttpClient
         return $this->get($this->generateFindUserUrl($userId), $this->getParams()) ?: [];
     }
 
-    public function getPositions(): array
+    public function getPositions(): Collection
     {
-        return $this->get($this->generateGetPositionsUrl(), $this->getParams()) ?: [];
+        $response = $this->get($this->generateGetPositionsUrl(), $this->getParams()) ?: [];
+
+        return collect($response['positions'] ?? []) ?: collect();
     }
 
     public function getToken(): string

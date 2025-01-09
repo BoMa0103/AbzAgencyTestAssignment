@@ -4,8 +4,16 @@ use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
-    return view('welcome');
+    return redirect('/users');
 });
+
+Route::get('/users', function () {
+    return view('users');
+})->name('users.index');
+
+Route::get('/create-user', function () {
+    return view('create-user');
+})->name('users.create');
 
 Route::get('/dashboard', function () {
     return view('dashboard');

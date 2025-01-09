@@ -13,7 +13,7 @@ use Psr\Http\Message\ResponseInterface;
 
 abstract class HttpClient
 {
-    protected ?GuzzleClient $client;
+    protected ?GuzzleClient $client = null;
 
     protected function makeClient(): GuzzleClient
     {

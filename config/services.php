@@ -35,4 +35,7 @@ return [
         ],
     ],
 
+    'abz-agency' => [
+        'host' => env('ABZ_AGENCY_HOST'),
+    ],
 ];
