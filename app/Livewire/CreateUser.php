@@ -33,7 +33,7 @@ class CreateUser extends Component
     protected array $validationRules = [
         'name' => 'required|string|max:255',
         'email' => 'required|email|max:255',
-        'phone' => 'required|regex:/^\+?[0-9]{10,15}$/',
+        'phone' => 'required|regex:/^\+380\d{9}$/',
         'position_id' => 'required|integer',
         'photo' => 'image|mimes:jpeg,png,jpg,gif,svg|max:5120',
     ];
