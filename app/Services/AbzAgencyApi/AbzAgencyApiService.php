@@ -1,9 +1,4 @@
 <?php
-/**
- * Description of AbzAgencyService.php
- * @copyright Copyright (c) DOTSPLATFORM, LLC
- * @author    Bogdan Mamontov <bohdan.mamontov@dotsplatform.com>
- */
 
 namespace App\Services\AbzAgencyApi;
 
